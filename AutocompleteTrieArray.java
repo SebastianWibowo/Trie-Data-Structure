@@ -1,5 +1,5 @@
-import java.util.*; // Mengimpor semua kelas dalam paket 'java.util'
-import java.io.*; // Mengimpor kelas dalam paket 'java.io' untuk operasi file
+import java.util.*;
+import java.io.*;
 
 public class AutocompleteTrieArray {
     static final int NUM_OF_CHARS = 128; // Menentukan jumlah maksimum karakter yang dapat diwakili dalam trie, yaitu 128 (jumlah karakter ASCII)
@@ -34,8 +34,9 @@ public class AutocompleteTrieArray {
             for (char ch : prefix.toCharArray()) {
                 ch = Character.toLowerCase(ch); // Convert to lowercase
                 node = node.children[ch];
-                if (node == null)
+                if (node == null) {
                     return new ArrayList<>(); // Jika node anak tidak ada, kembalikan daftar kosong.
+                }
             }
             helper(node, res, prefix.substring(0, prefix.length() - 1)); // Memanggil helper untuk mengumpulkan semua kata yang sesuai.
             return res;
@@ -68,24 +69,28 @@ public class AutocompleteTrieArray {
 
         Scanner scanner = new Scanner(System.in); // Membuat objek Scanner untuk membaca input dari pengguna.
 
-        System.out.println("Start typing to autocomplete. Type 'reset' to start a new search or 'exit' to quit.");
+        System.out.println("Silahkan masukkan nama barang yang ingin dicari misal (kabel), jika ingin keluar dari pencarian, ketik 'exit'");
+        StringBuilder currentInput = new StringBuilder(); // Menginisialisasi StringBuilder untuk menyimpan input saat ini.
+        
         while (true) { // Memulai loop utama program untuk terus menerima input dari pengguna.
-            StringBuilder currentInput = new StringBuilder(); // Menginisialisasi StringBuilder dan memulai loop untuk membaca input.
-            while (true) {
-                System.out.print("Input: ");
-                String input = scanner.nextLine(); // Meminta pengguna untuk memasukkan teks dan membaca input.
-                if (input.equalsIgnoreCase("exit")) {
-                    System.out.println("Exiting...");
-                    scanner.close();
-                    return; // Jika pengguna mengetik "exit", tampilkan pesan keluar, tutup scanner, dan keluar dari program.
-                } else if (input.equalsIgnoreCase("reset")) {
-                    System.out.println("Starting a new search...");
-                    break; // Jika pengguna mengetik "reset", tampilkan pesan dan keluar dari loop saat ini untuk memulai pencarian baru.
-                }
-                currentInput.append(input);
-                List<String> suggestions = t.autocomplete(currentInput.toString());
-                System.out.println("Suggestions: " + suggestions); // Tambahkan input ke currentInput, panggil metode autocomplete dengan input saat ini,
+            System.out.print("Input: ");
+            String input = scanner.nextLine(); // Meminta pengguna untuk memasukkan teks dan membaca input.
+            
+            if (input.equalsIgnoreCase("exit")) {
+                System.out.println("Exiting...");
+                scanner.close();
+                return; // Jika pengguna mengetik "exit", tampilkan pesan keluar, tutup scanner, dan keluar dari program.
             }
+
+            currentInput.append(input);
+            List<String> suggestions = t.autocomplete(currentInput.toString());
+            if (suggestions.isEmpty()) {
+                System.out.println("Nama sparepart tidak ditemukan, silahkan coba lagi dengan memasukan nama sparepart yang sesuai");
+            } else {
+                System.out.println("Suggestions: " + suggestions);
+            }
+
+            currentInput.setLength(0); // Reset currentInput untuk pencarian berikutnya.
         }
     }
 }
